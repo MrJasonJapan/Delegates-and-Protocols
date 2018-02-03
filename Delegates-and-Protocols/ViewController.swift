@@ -8,8 +8,12 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-
+class ViewController: UIViewController, CanReceive {
+    
+    @IBOutlet weak var label: UILabel!
+    
+    @IBOutlet weak var textField: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -19,7 +23,32 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    @IBAction func changeToBlue(_ sender: Any) {
+        view.backgroundColor = UIColor.blue
+    }
 
-
+    @IBAction func sendButtonPressed(_ sender: Any) {
+        // Invoke our segue.
+        performSegue(withIdentifier: "sendDataForwards", sender: self)
+    }
+    
+    // this function gets executed right after performSegue() gets run.
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "sendDataForwards" {
+            
+            let secondVC = segue.destination as! SecondViewController
+            
+            secondVC.data = textField.text!
+            
+            //assign our self as the delegate of the SecondVeiwController, so we can receive data back.
+            secondVC.delegate = self
+        }
+    }
+    
+    func dataRecieved(data: String) {
+        label.text = data
+    }
+    
 }
 
